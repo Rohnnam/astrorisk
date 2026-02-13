@@ -708,7 +708,8 @@ def get_detailed_llm_analysis(sector_data, all_raw_data, all_normalized, ml_fore
     Generate detailed multi-paragraph analysis for sector detail view.
     This is called separately from the quick advisory.
     """
-    MISTRAL_API_KEY = "pn2dxv5anni4FPKtlkFyBlpdClBjRrQ2"
+    import os
+    MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
     
     if not MISTRAL_API_KEY or "YOUR_MISTRAL" in MISTRAL_API_KEY:
         return "Detailed analysis unavailable - API key not configured."
