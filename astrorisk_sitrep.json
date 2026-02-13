@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-02-03T16:45:34.691490+00:00",
+  "sectors": {
+    "satellite": {
+      "sector": "Satellite Operations",
+      "risk_score": 29,
+      "category": "green",
+      "advisory": "NOMINAL: Satellite Operations stable (29/100) \u2014 standard operations.",
+      "primary_driver": "electron_norm"
+    },
+    "aviation": {
+      "sector": "Aviation & Communications",
+      "risk_score": 37,
+      "category": "yellow",
+      "advisory": "CAUTION: Elevated Solar Flare Activity, HF radio blackout affecting Aviation & Communications (37/100) \u2014 prepare mitigation.",
+      "primary_driver": "xray_norm"
+    },
+    "power_grid": {
+      "sector": "Power Grid Stability",
+      "risk_score": 20,
+      "category": "green",
+      "advisory": "NOMINAL: Power Grid Stability stable (20/100) \u2014 standard operations.",
+      "primary_driver": "bz_norm"
+    }
+  },
+  "ml_forecast": {
+    "storm_probability": 0.075,
+    "detected_pattern": "Insufficient temporal context (warming up)",
+    "confidence": 0.25,
+    "urgency_multiplier": 1.0
+  },
+  "overall_advisory": "ADVISORY: Single-sector caution \u2014 standard monitoring active."
+}

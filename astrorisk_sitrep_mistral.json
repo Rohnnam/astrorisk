@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-02-03T16:59:32.550970+00:00",
+  "sectors": {
+    "satellite": {
+      "sector": "Satellite Operations",
+      "risk_score": 29,
+      "category": "green",
+      "advisory": "\"STATUS: CAUTION: Monitor deep dielectric charging; adjust satellite orientations as needed to mitigate high electron flux risks.\"",
+      "primary_driver": "electron_norm"
+    },
+    "aviation": {
+      "sector": "Aviation & Communications",
+      "risk_score": 37,
+      "category": "yellow",
+      "advisory": "\"STATUS: CAUTION: Monitor HF radio disruptions; prepare for degraded comms in polar regions.\"",
+      "primary_driver": "xray_norm"
+    },
+    "power_grid": {
+      "sector": "Power Grid Stability",
+      "risk_score": 20,
+      "category": "green",
+      "advisory": "**STATUS: CAUTION: Monitor Bz fluctuations; prepare for potential grid adjustments if storm probability rises.**",
+      "primary_driver": "bz_norm"
+    }
+  },
+  "ml_forecast": {
+    "storm_probability": 0.074,
+    "detected_pattern": "Insufficient temporal context (warming up)",
+    "confidence": 0.25,
+    "urgency_multiplier": 1.0
+  },
+  "overall_advisory": "ADVISORY: Single-sector caution \u2014 standard monitoring active."
+}

@@ -1,0 +1,79 @@
+{
+  "timestamp": "2026-02-13T17:20:46.044013+00:00",
+  "ml_forecast": {
+    "storm_probability": 0.535,
+    "detected_pattern": "Magnetic Reconnection Dominant (TFT)",
+    "confidence": 1.0,
+    "urgency_multiplier": 1.1,
+    "variable_importance": {
+      "kp_norm": 0.09467513859272003,
+      "xray_norm": 0.1501881182193756,
+      "proton_norm": 0.1250736117362976,
+      "electron_norm": 0.12099606543779373,
+      "wind_speed_norm": 0.11740130186080933,
+      "bz_norm": 0.15125833451747894,
+      "density_norm": 0.13567470014095306,
+      "temperature_norm": 0.1047326996922493
+    }
+  },
+  "sectors": {
+    "satellite": {
+      "sector": "Satellite Operations",
+      "risk_score": 34,
+      "category": "yellow",
+      "advisory": "**STATUS: CAUTION: Elevated electron flux may disrupt satellite operations; monitor closely.**",
+      "detailed_analysis": "### **1. CURRENT SITUATION**\nThe current risk level for satellite operations is **YELLOW (34/100)**, classified as **MEDIUM** with 55% confidence. The primary driver is elevated **electron flux (1064.3 electrons/cm\u00b2/s)**, contributing **20.2%** to the risk assessment. Despite nominal conditions, the **53.5% probability of a Transient Forcing Event (TFT)**\u2014driven by magnetic reconnection\u2014warrants heightened monitoring due to potential disruptions.\n\n### **2. PHYSICAL MECHANISMS**\nThe elevated electron flux suggests enhanced radiation belt activity, likely sustained by **magnetic reconnection events** in the magnetotail. The **negative Bz component (-0.9 nT)** indicates southward IMF orientation, favoring reconnection and energy transfer into the magnetosphere. While solar wind speed (409 km/s) and plasma pressure remain stable, the **TFT probability** suggests intermittent geomagnetic coupling, which could lead to localized enhancements in charged particle fluxes.\n\n### **3. OPERATIONAL IMPACTS**\nSatellite operators should anticipate **increased surface charging risks** due to elevated electron flux, particularly for high-altitude assets in geostationary or polar orbits. Minor **single-event upsets (SEUs)** or **degraded sensor performance** may occur, though no severe storm conditions are forecasted. The **Kp index (1.7)** remains low, but operators should verify **radiation-hardened systems** and monitor for anomalies in onboard electronics.\n\n### **4. RECOMMENDATIONS**\nOperators should **increase telemetry monitoring** for charging currents and SEU signatures, particularly on assets with exposed solar panels or sensitive payloads. **Reconfiguration of protective shielding** may be warranted for high-risk assets, and **contingency procedures** for radiation-induced resets should be reviewed. Given the **TFT probability**, a **24-hour watch window** is advised to assess any sudden flux enhancements or geomagnetic disturbances.",
+      "primary_driver": "electron_norm",
+      "rf_category": 1,
+      "rf_confidence": 0.5510264784471945
+    },
+    "aviation": {
+      "sector": "Aviation & Communications",
+      "risk_score": 27,
+      "category": "green",
+      "advisory": "**STATUS: CAUTION: Monitor solar flare activity; potential radio disruptions possible.**",
+      "detailed_analysis": "**1. CURRENT SITUATION:**\nThe Aviation & Communications sector is currently under **GREEN (27/100)** risk conditions, classified as **LOW** with 56% confidence. The primary driver is the **normalized X-ray flux (22.2% contribution)**, which remains within nominal thresholds. Identified threats are minimal, with no significant solar activity or geomagnetic disturbances detected. The **Kp index (1.7/9)** and **solar wind speed (409 km/s)** are consistent with quiet conditions, reinforcing the low-risk assessment.\n\n**2. PHYSICAL MECHANISMS:**\nThe observed state is governed by **magnetic reconnection-dominant (TFT) patterns**, with a **53.5% probability of transient fluctuations**. The **Bz component (-0.9 nT)** indicates weak southward IMF, insufficient to drive significant geomagnetic coupling. The **electron flux (1064.3 e/cm\u00b2/s)** and **proton flux (0.2 pfu)** are well below hazardous levels, suggesting stable interplanetary conditions. Plasma pressure and wind bursts are negligible, further stabilizing the environment.\n\n**3. OPERATIONAL IMPACTS:**\nUnder these conditions, **HF radio propagation and satellite communications** are expected to operate normally, with no degradation in signal quality. Aviation systems relying on GNSS (e.g., GPS) will experience **no significant errors**, as solar wind and geomagnetic activity remain benign. However, operators should remain vigilant for **minor TFT-induced fluctuations**, though these are unlikely to disrupt operations.\n\n**4. RECOMMENDATIONS:**\nNo immediate mitigation is required, but operators should **monitor X-ray flux trends** for potential increases in solar activity. Routine checks of **HF radio and GNSS systems** are advised to ensure baseline performance. If the **TFT probability exceeds 70%**, contingency plans for minor signal variability should be reviewed, though current conditions do not warrant proactive measures.",
+      "primary_driver": "xray_norm",
+      "rf_category": 0,
+      "rf_confidence": 0.562539464304225
+    },
+    "power_grid": {
+      "sector": "Power Grid Stability",
+      "risk_score": 34,
+      "category": "yellow",
+      "advisory": "**STATUS: CAUTION: Prepare for potential geomagnetic disturbances due to elevated Bz fluctuations.**",
+      "detailed_analysis": "**1. CURRENT SITUATION:**\nThe power grid sector is operating under a **YELLOW (34/100) risk level**, classified as **MEDIUM** with 52% confidence. The primary driver is the **Bz component** of the interplanetary magnetic field (Bz_norm), contributing **14.5%** to the risk assessment. Despite nominal conditions, the **magnetic reconnection-dominant TFT pattern** (53.5% probability) suggests potential for transient geomagnetic disturbances, though current telemetry indicates stable solar wind conditions (409 km/s, Bz = -0.9 nT).\n\n**2. PHYSICAL MECHANISMS:**\nThe observed **negative Bz component** (-0.9 nT) facilitates magnetic reconnection at the magnetopause, enabling energy transfer into Earth\u2019s magnetosphere. However, the **low solar wind density (0.1 cm\u00b3)** and **plasma pressure (0.000)** limit coupling efficiency, reducing the likelihood of significant geomagnetic activity. The **Kp index (1.7/9)** and **X-ray flux (4.62e-07 W/m\u00b2)** further confirm quiescent conditions, though the **TFT pattern** suggests episodic reconnection events could elevate risk if solar wind parameters shift.\n\n**3. OPERATIONAL IMPACTS:**\nUnder current conditions, the power grid faces **minimal operational threats**, with no immediate risk of transformer saturation or voltage instability. However, the **TFT pattern** warrants monitoring for potential **transient geomagnetically induced currents (GICs)** in high-latitude regions, particularly if Bz fluctuates. The **electron flux (1064.3 e/cm\u00b2/s)** is within nominal ranges, posing no risk to satellite-based grid monitoring systems.\n\n**4. RECOMMENDATIONS:**\nMaintain **standard operational protocols** but increase vigilance for **Bz reversals** or sudden solar wind pressure spikes. Deploy **real-time GIC monitoring** in vulnerable grid segments (e.g., northern power networks) and ensure **automated load-balancing systems** are calibrated for potential TFT-driven fluctuations. Coordinate with **space weather forecasting agencies** for updated TFT probability refinements.\n\n**CONCLUSION:**\nThe sector remains stable, but the **TFT pattern** and **Bz-driven reconnection potential** necessitate proactive surveillance. No immediate actions are required, but preparedness for transient events is advised.",
+      "primary_driver": "bz_norm",
+      "rf_category": 1,
+      "rf_confidence": 0.5185897501058696
+    }
+  },
+  "overall_advisory": "HEIGHTENED WATCH: 2 sectors elevated \u2014 monitor closely.",
+  "raw_data": {
+    "kp": 1.67,
+    "xray_flux": 4.6175631496225833e-07,
+    "proton_flux": 0.1708986908197403,
+    "electron_flux": 1064.3306884765625,
+    "wind_speed": 409.2,
+    "density": 0.11,
+    "temperature": 108152.0,
+    "bz_gsm": -0.91
+  },
+  "normalized_data": {
+    "kp_norm": 0.18555555555555556,
+    "xray_norm": 0.4440688072580232,
+    "proton_norm": 0.038789789298842935,
+    "electron_norm": 0.5045127641002286,
+    "wind_speed_norm": 0.15599999999999997,
+    "bz_norm": 0.48483333333333334,
+    "density_norm": 0.0,
+    "temperature_norm": 0.049322613065326634
+  },
+  "temporal_features": {
+    "plasma_pressure": 0.0,
+    "storm_ramp": 0.0,
+    "kp_acceleration": -1.0,
+    "wind_burst": 0.0,
+    "feature_confidence": 1.0
+  }
+}
