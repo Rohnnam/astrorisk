@@ -17,7 +17,6 @@ st.set_page_config(
 )
 
 # ================= LOAD LIVE DATA =================
-from astrorisk_backend_enhanced import run_pipeline_function
 
 live_data = run_pipeline_function()
 if live_data is None:
