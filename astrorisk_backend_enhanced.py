@@ -4,6 +4,8 @@ ASTRORISK BACKEND V2 - ENHANCED WITH DETAILED ANALYSIS
 - Improved temporal feature extraction
 - Detailed multi-paragraph LLM analysis for each sector
 - All integrated with live NOAA/NASA data
+- ✅ STEP 1: Supabase connection proof
+- ✅ STEP 2: Test row insert to verify DB write
 """
 
 import numpy as np
@@ -27,6 +29,12 @@ from supabase import create_client
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
+
+# =============================================================================
+# ✅ STEP 1 — CONFIRM SUPABASE CONNECTION (proof in Render logs)
+# =============================================================================
+print("SUPABASE_URL:", SUPABASE_URL)
+print("SUPABASE_SERVICE_KEY exists:", bool(SUPABASE_SERVICE_KEY))
 
 supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
@@ -865,7 +873,7 @@ class AstroRiskAdvisor:
                 'risk_score': int(risk_score),
                 'category': sector_data.get('category', 'green'),
                 'advisory': advisory_text,
-                'detailed_analysis': detailed_analysis,  # NEW: Full analysis
+                'detailed_analysis': detailed_analysis,  # Full analysis
                 'primary_driver': driver_param,
                 'rf_category': int(sector_data.get('rf_category', 0)),
                 'rf_confidence': float(sector_data.get('rf_confidence', 0.0))
@@ -934,6 +942,26 @@ def run_astrorisk_pipeline(mistral_api_key):
     print("ASTRORISK ENHANCED PIPELINE V2 - TFT + RANDOM FOREST + DETAILED ANALYSIS")
     print("="*80)
     
+    # =========================================================================
+    # ✅ STEP 2 — INSERT A TEST ROW INTO SUPABASE (REAL DB WRITE TEST)
+    # =========================================================================
+    print("\n[STEP 2] Testing Supabase table write...")
+    try:
+        test_insert = supabase.table("telemetry_history").insert({
+            "kp": 5.0,
+            "xray_flux": 1e-6,
+            "proton_flux": 10.0,
+            "electron_flux": 300.0,
+            "wind_speed": 500.0,
+            "density": 8.0,
+            "temperature": 200000,
+            "bz_gsm": -8.0
+        }).execute()
+        print("✅ Insert response:", test_insert)
+    except Exception as e:
+        print(f"❌ Supabase insert FAILED: {e}")
+    # =========================================================================
+
     print("\n[1/7] Fetching real-time space weather data...")
     ingestor = AstroRiskIngestor()
     
