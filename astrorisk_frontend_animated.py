@@ -4,9 +4,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from astrorisk_shared_data import load_live_data, get_synthetic_fallback
-import time as time_module
-from astrorisk_backend_enhanced import AstroRiskEngine
-
+import time
 
 # ================= PAGE CONFIG =================
 st.set_page_config(
@@ -17,8 +15,7 @@ st.set_page_config(
 )
 
 # ================= LOAD LIVE DATA =================
-
-live_data = run_pipeline_function()
+live_data = load_live_data()
 if live_data is None:
     live_data = get_synthetic_fallback()
     data_source = "SYNTHETIC"
@@ -95,7 +92,7 @@ header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
-# ================= ENHANCED CSS WITH ANIMATIONS =================
+# ================= ADVANCED CSS (FROM ORIGINAL) =================
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@400;500;600;700;900&display=swap');
@@ -129,42 +126,6 @@ st.markdown("""
     font-family: var(--font-body);
 }
 
-/* ========== ANIMATIONS ========== */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideIn {
-    from { transform: translateX(-30px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-@keyframes glow {
-    0%, 100% { box-shadow: 0 0 20px rgba(0, 217, 255, 0.3); }
-    50% { box-shadow: 0 0 40px rgba(0, 217, 255, 0.6); }
-}
-
-@keyframes shimmer {
-    0% { background-position: -1000px 0; }
-    100% { background-position: 1000px 0; }
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
 .glass-panel {
     background: linear-gradient(135deg, 
         rgba(31, 40, 71, 0.7) 0%, 
@@ -176,38 +137,11 @@ st.markdown("""
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     position: relative;
     overflow: hidden;
-    animation: fadeIn 0.6s ease-out;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-panel:hover {
-    border-color: rgba(0, 217, 255, 0.4);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 217, 255, 0.3);
-    transform: translateY(-4px);
-}
-
-/* Animated border glow */
-.glass-panel::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(90deg, 
-        transparent,
-        rgba(0, 217, 255, 0.5),
-        transparent
-    );
-    background-size: 200% 100%;
-    border-radius: 16px;
-    opacity: 0;
-    z-index: -1;
-    animation: shimmer 3s linear infinite;
-}
-
-.glass-panel:hover::before {
-    opacity: 1;
+    border-color: rgba(0, 217, 255, 0.3);
+    transform: translateY(-2px);
 }
 
 .main-title {
@@ -220,7 +154,6 @@ st.markdown("""
     background-clip: text;
     letter-spacing: 0.1em;
     margin: 0;
-    animation: fadeIn 0.8s ease-out, glow 2s ease-in-out infinite;
 }
 
 .subtitle {
@@ -231,7 +164,6 @@ st.markdown("""
     letter-spacing: 0.15em;
     margin-top: 12px;
     text-transform: uppercase;
-    animation: slideIn 0.8s ease-out 0.2s both;
 }
 
 .alert-critical {
@@ -242,7 +174,12 @@ st.markdown("""
     border-radius: 12px;
     padding: 24px 32px;
     margin: 24px 0;
-    animation: pulse 2s ease-in-out infinite, fadeIn 0.6s ease-out;
+    animation: alert-pulse 2s ease-in-out infinite;
+}
+
+@keyframes alert-pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 23, 68, 0.4); }
+    50% { box-shadow: 0 0 40px rgba(255, 23, 68, 0.8); }
 }
 
 .alert-warning {
@@ -253,7 +190,6 @@ st.markdown("""
     border-radius: 12px;
     padding: 24px 32px;
     margin: 24px 0;
-    animation: fadeIn 0.6s ease-out;
 }
 
 .sector-card {
@@ -264,14 +200,6 @@ st.markdown("""
     padding: 24px;
     border: 1px solid var(--color-border);
     margin-bottom: 16px;
-    animation: fadeIn 0.6s ease-out;
-    transition: all 0.3s ease;
-}
-
-.sector-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(0, 217, 255, 0.5);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 217, 255, 0.2);
 }
 
 .phase-indicator {
@@ -285,16 +213,6 @@ st.markdown("""
     font-weight: 600;
     letter-spacing: 0.1em;
     margin: 0 8px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.phase-indicator:hover {
-    transform: scale(1.1);
-}
-
-.phase-indicator.active {
-    animation: pulse 2s ease-in-out infinite;
 }
 
 .telemetry-row {
@@ -303,24 +221,12 @@ st.markdown("""
     align-items: center;
     padding: 16px 0;
     border-bottom: 1px solid rgba(0, 217, 255, 0.1);
-    animation: slideIn 0.5s ease-out;
-    transition: all 0.3s ease;
-}
-
-.telemetry-row:hover {
-    background: rgba(0, 217, 255, 0.05);
-    padding-left: 10px;
 }
 
 .telemetry-label {
     font-size: 0.9rem;
     color: var(--color-text-secondary);
     font-weight: 400;
-    transition: color 0.3s ease;
-}
-
-.telemetry-row:hover .telemetry-label {
-    color: var(--color-primary);
 }
 
 .telemetry-value {
@@ -328,12 +234,6 @@ st.markdown("""
     font-size: 1.1rem;
     color: var(--color-primary);
     font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.telemetry-row:hover .telemetry-value {
-    font-size: 1.2rem;
-    text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
 }
 
 .telemetry-bar {
@@ -343,73 +243,27 @@ st.markdown("""
     border-radius: 4px;
     overflow: hidden;
     margin-top: 6px;
-    position: relative;
 }
 
 .telemetry-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--color-primary), var(--color-success));
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-}
-
-.telemetry-bar-fill::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: linear-gradient(90deg, 
-        transparent,
-        rgba(255, 255, 255, 0.3),
-        transparent
-    );
-    animation: shimmer 2s linear infinite;
-}
-
-/* Number counter animation */
-.counter {
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* Loading spinner */
-.spinner {
-    animation: spin 1s linear infinite;
-}
-
-/* Bounce animation for alerts */
-.bounce {
-    animation: bounce 2s ease-in-out infinite;
-}
-
-/* Data badge animation */
-.data-badge {
-    display: inline-block;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    animation: fadeIn 0.6s ease-out, pulse 3s ease-in-out infinite;
-    transition: all 0.3s ease;
-}
-
-.data-badge:hover {
-    transform: scale(1.1);
+    transition: width 0.5s ease;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ================= HEADER WITH ANIMATIONS =================
+# ================= HEADER =================
 st.markdown(f"""
 <div class="glass-panel">
     <h1 class="main-title">⬢ ASTRORISK</h1>
     <div class="subtitle">Space Weather Operations Command</div>
-    <div style="margin-top: 16px; color: #6b7a99; font-size: 0.85rem; animation: fadeIn 0.6s ease-out 0.4s both;">
+    <div style="margin-top: 16px; color: var(--color-text-muted); font-size: 0.85rem;">
         ⏱ Last Update: {time_str}
     </div>
     <div style="margin-top: 12px;">
-        <span class="data-badge" style="background: {'linear-gradient(135deg, rgba(0, 245, 160, 0.2), rgba(0, 217, 255, 0.2))' if data_source == 'LIVE' else 'linear-gradient(135deg, rgba(255, 190, 11, 0.2), rgba(255, 133, 0, 0.2))'}; 
+        <span style="display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; 
+                     background: {'linear-gradient(135deg, rgba(0, 245, 160, 0.2), rgba(0, 217, 255, 0.2))' if data_source == 'LIVE' else 'linear-gradient(135deg, rgba(255, 190, 11, 0.2), rgba(255, 133, 0, 0.2))'}; 
                      border: 1px solid {'#00f5a0' if data_source == 'LIVE' else '#ffbe0b'}; 
                      color: {'#00f5a0' if data_source == 'LIVE' else '#ffbe0b'};">
             {data_source} DATA
@@ -420,10 +274,10 @@ st.markdown(f"""
 
 st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
 
-# ================= ALERT BANNER WITH ANIMATION =================
+# ================= ALERT BANNER =================
 if storm_prob >= 0.70:
     st.markdown(f"""
-    <div class="alert-critical bounce">
+    <div class="alert-critical">
         <div style="font-family: Orbitron; font-size: 1.5rem; margin-bottom: 12px;">
             ⚠️ SEVERE GEOMAGNETIC STORM DETECTED
         </div>
@@ -455,7 +309,7 @@ st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
 col1, col2 = st.columns([1.2, 1])
 
 with col1:
-    # Create the gauge chart (dial) with animation
+    # Create the gauge chart (dial)
     fig_gauge = go.Figure(go.Indicator(
         mode="gauge+number+delta",
         value=overall_risk_score,
@@ -487,58 +341,58 @@ with col1:
         plot_bgcolor='rgba(0,0,0,0)',
         font={'color': "#e8edf4", 'family': "Orbitron"},
         height=400,
-        margin=dict(l=20, r=20, t=80, b=20),
-        transition={'duration': 1000}  # Smooth animation
+        margin=dict(l=20, r=20, t=80, b=20)
     )
 
-    st.plotly_chart(fig_gauge, use_container_width=True, key='risk_gauge')
+    st.plotly_chart(fig_gauge, use_container_width=True)
 
 with col2:
-    # Status indicators with staggered animations
+    # Status indicators - Using components to avoid HTML escaping
     st.markdown('<div style="padding: 20px;">', unsafe_allow_html=True)
     
     # KP INDEX
-    st.markdown('<div style="margin-bottom: 32px; animation: fadeIn 0.6s ease-out 0.2s both;">', unsafe_allow_html=True)
+    st.markdown('<div style="margin-bottom: 32px;">', unsafe_allow_html=True)
     st.markdown('<div style="font-size: 0.85rem; color: #6b7a99; letter-spacing: 0.1em; margin-bottom: 8px;">KP INDEX</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="counter" style="font-family: Orbitron; font-size: 3rem; color: #00d9ff; font-weight: 700;">{kp_value:.1f}<span style="font-size: 1.5rem; color: #6b7a99;">/9</span></div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="font-family: Orbitron; font-size: 3rem; color: #00d9ff; font-weight: 700;">{kp_value:.1f}<span style="font-size: 1.5rem; color: #6b7a99;">/9</span></div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
     # STORM LEVEL
-    st.markdown('<div style="margin-bottom: 32px; animation: fadeIn 0.6s ease-out 0.4s both;">', unsafe_allow_html=True)
+    st.markdown('<div style="margin-bottom: 32px;">', unsafe_allow_html=True)
     st.markdown('<div style="font-size: 0.85rem; color: #6b7a99; letter-spacing: 0.1em; margin-bottom: 8px;">STORM LEVEL</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="counter" style="font-family: Orbitron; font-size: 3rem; color: {storm_color}; font-weight: 700;">{storm_level}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="font-family: Orbitron; font-size: 3rem; color: {storm_color}; font-weight: 700;">{storm_level}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
     # DURATION
-    st.markdown('<div style="animation: fadeIn 0.6s ease-out 0.6s both;">', unsafe_allow_html=True)
+    st.markdown('<div>', unsafe_allow_html=True)
     st.markdown('<div style="font-size: 0.85rem; color: #6b7a99; letter-spacing: 0.1em; margin-bottom: 8px;">DURATION</div>', unsafe_allow_html=True)
-    st.markdown('<div class="counter" style="font-family: Orbitron; font-size: 2rem; color: #00d9ff; font-weight: 700;">6<span style="font-size: 1.2rem; color: #6b7a99;"> h 24m</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-family: Orbitron; font-size: 2rem; color: #00d9ff; font-weight: 700;">6<span style="font-size: 1.2rem; color: #6b7a99;"> h 24m</span></div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Phase indicators at bottom with hover effects
+
+# Phase indicators at bottom
 st.markdown(f"""
 <div style="display: flex; justify-content: center; gap: 16px; margin-top: 24px; padding: 16px; background: rgba(10, 14, 39, 0.5); border-radius: 12px;">
-    <div class="phase-indicator {'active' if storm_phase == 'Normal' else ''}" style="background: {'rgba(0, 245, 160, 0.2)' if storm_phase == 'Normal' else 'rgba(107, 122, 153, 0.1)'}; 
+    <div class="phase-indicator" style="background: {'rgba(0, 245, 160, 0.2)' if storm_phase == 'Normal' else 'rgba(107, 122, 153, 0.1)'}; 
                                          border: 1px solid {'#00f5a0' if storm_phase == 'Normal' else 'rgba(107, 122, 153, 0.3)'};
                                          color: {'#00f5a0' if storm_phase == 'Normal' else '#6b7a99'};">
         <span style="width: 8px; height: 8px; border-radius: 50%; background: {'#00f5a0' if storm_phase == 'Normal' else '#6b7a99'};"></span>
         Normal
     </div>
-    <div class="phase-indicator {'active' if storm_phase == 'Watch' else ''}" style="background: {'rgba(255, 190, 11, 0.2)' if storm_phase == 'Watch' else 'rgba(107, 122, 153, 0.1)'}; 
+    <div class="phase-indicator" style="background: {'rgba(255, 190, 11, 0.2)' if storm_phase == 'Watch' else 'rgba(107, 122, 153, 0.1)'}; 
                                          border: 1px solid {'#ffbe0b' if storm_phase == 'Watch' else 'rgba(107, 122, 153, 0.3)'};
                                          color: {'#ffbe0b' if storm_phase == 'Watch' else '#6b7a99'};">
         <span style="width: 8px; height: 8px; border-radius: 50%; background: {'#ffbe0b' if storm_phase == 'Watch' else '#6b7a99'};"></span>
         Watch
     </div>
-    <div class="phase-indicator {'active' if storm_phase == 'STORM ACTIVE' else ''}" style="background: {'rgba(255, 23, 68, 0.2)' if storm_phase == 'STORM ACTIVE' else 'rgba(107, 122, 153, 0.1)'}; 
+    <div class="phase-indicator" style="background: {'rgba(255, 23, 68, 0.2)' if storm_phase == 'STORM ACTIVE' else 'rgba(107, 122, 153, 0.1)'}; 
                                          border: 1px solid {'#ff1744' if storm_phase == 'STORM ACTIVE' else 'rgba(107, 122, 153, 0.3)'};
                                          color: {'#ff1744' if storm_phase == 'STORM ACTIVE' else '#6b7a99'};">
         <span style="width: 8px; height: 8px; border-radius: 50%; background: {'#ff1744' if storm_phase == 'STORM ACTIVE' else '#6b7a99'};"></span>
         STORM ACTIVE
     </div>
-    <div class="phase-indicator {'active' if storm_phase == 'Recovery' else ''}" style="background: {'rgba(160, 179, 216, 0.2)' if storm_phase == 'Recovery' else 'rgba(107, 122, 153, 0.1)'}; 
+    <div class="phase-indicator" style="background: {'rgba(160, 179, 216, 0.2)' if storm_phase == 'Recovery' else 'rgba(107, 122, 153, 0.1)'}; 
                                          border: 1px solid {'#a0b3d8' if storm_phase == 'Recovery' else 'rgba(107, 122, 153, 0.3)'};
                                          color: {'#a0b3d8' if storm_phase == 'Recovery' else '#6b7a99'};">
         <span style="width: 8px; height: 8px; border-radius: 50%; background: {'#a0b3d8' if storm_phase == 'Recovery' else '#6b7a99'};"></span>
@@ -551,7 +405,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
 
-# ================= SECTOR ADVISORIES WITH HOVER EFFECTS =================
+# ================= SECTOR ADVISORIES =================
 st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
 st.markdown('<h2 style="font-family: Orbitron; margin-bottom: 24px;">⬢ SECTOR-SPECIFIC ADVISORIES</h2>', unsafe_allow_html=True)
 
@@ -583,26 +437,26 @@ for idx, sector_key in enumerate(['satellite', 'aviation', 'power_grid']):
         
         with cols[idx]:
             st.markdown(f"""
-            <div class="sector-card" style="animation-delay: {idx * 0.1}s;">
+            <div class="sector-card">
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                    <span style="font-size: 2rem; animation: pulse 2s ease-in-out infinite; animation-delay: {idx * 0.2}s;">{sector_icons.get(sector_key, '📊')}</span>
+                    <span style="font-size: 2rem;">{sector_icons.get(sector_key, '📊')}</span>
                     <div>
-                        <div style="font-family: Orbitron; font-size: 0.75rem; color: #6b7a99; letter-spacing: 0.1em;">
+                        <div style="font-family: Orbitron; font-size: 0.75rem; color: var(--color-text-muted); letter-spacing: 0.1em;">
                             {sector_name.upper()}
                         </div>
-                        <div class="counter" style="font-family: Orbitron; font-size: 1.8rem; color: {color}; font-weight: 700; margin-top: 4px;">
-                            {risk_score}<span style="font-size: 1rem; color: #6b7a99;">/100</span>
+                        <div style="font-family: Orbitron; font-size: 1.8rem; color: {color}; font-weight: 700; margin-top: 4px;">
+                            {risk_score}<span style="font-size: 1rem; color: var(--color-text-muted);">/100</span>
                         </div>
                     </div>
                 </div>
                 <div style="margin-bottom: 16px;">
-                    <div style="font-size: 0.75rem; color: #6b7a99; margin-bottom: 4px;">RISK LEVEL</div>
-                    <div class="telemetry-bar">
-                        <div class="telemetry-bar-fill" style="width: {risk_score}%; background: linear-gradient(90deg, {color}, {color}80);"></div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 4px;">RISK LEVEL</div>
+                    <div style="width: 100%; height: 8px; background: rgba(107, 122, 153, 0.2); border-radius: 4px; overflow: hidden;">
+                        <div style="width: {risk_score}%; height: 100%; background: linear-gradient(90deg, {color}, {color}80); transition: width 0.5s ease;"></div>
                     </div>
                 </div>
                 <div style="padding: 14px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; border-left: 3px solid {color};">
-                    <div style="font-size: 0.7rem; color: #6b7a99; margin-bottom: 6px; letter-spacing: 0.1em;">ADVISORY</div>
+                    <div style="font-size: 0.7rem; color: var(--color-text-muted); margin-bottom: 6px; letter-spacing: 0.1em;">ADVISORY</div>
                     <div style="font-size: 0.85rem; line-height: 1.5;">{advisory}</div>
                 </div>
             </div>
@@ -612,7 +466,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
 
-# ================= REAL-TIME TELEMETRY WITH ANIMATED SLIDERS =================
+# ================= REAL-TIME TELEMETRY WITH SLIDERS =================
 st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
 st.markdown('<h2 style="font-family: Orbitron; margin-bottom: 24px;">⬢ REAL-TIME TELEMETRY</h2>', unsafe_allow_html=True)
 
@@ -643,34 +497,34 @@ with col1:
         <div class="telemetry-row">
             <div class="telemetry-label">Kp Index</div>
             <div style="flex: 1; margin-left: 20px;">
-                <div class="telemetry-value counter">{kp_value:.1f}</div>
+                <div class="telemetry-value">{kp_value:.1f}</div>
                 <div class="telemetry-bar">
                     <div class="telemetry-bar-fill" style="width: {kp_norm*100:.0f}%;"></div>
                 </div>
             </div>
         </div>
-        <div class="telemetry-row" style="animation-delay: 0.1s;">
+        <div class="telemetry-row">
             <div class="telemetry-label">Solar Wind Speed</div>
             <div style="flex: 1; margin-left: 20px;">
-                <div class="telemetry-value counter">{wind_speed_value:.0f} km/s</div>
+                <div class="telemetry-value">{wind_speed_value:.0f} km/s</div>
                 <div class="telemetry-bar">
                     <div class="telemetry-bar-fill" style="width: {wind_speed_norm*100:.0f}%;"></div>
                 </div>
             </div>
         </div>
-        <div class="telemetry-row" style="animation-delay: 0.2s;">
+        <div class="telemetry-row">
             <div class="telemetry-label">Proton Flux (>10 MeV)</div>
             <div style="flex: 1; margin-left: 20px;">
-                <div class="telemetry-value counter">{proton_flux_value:.1f} pfu</div>
+                <div class="telemetry-value">{proton_flux_value:.1f} pfu</div>
                 <div class="telemetry-bar">
                     <div class="telemetry-bar-fill" style="width: {proton_norm*100:.0f}%;"></div>
                 </div>
             </div>
         </div>
-        <div class="telemetry-row" style="animation-delay: 0.3s;">
+        <div class="telemetry-row">
             <div class="telemetry-label">Electron Flux (>2 MeV)</div>
             <div style="flex: 1; margin-left: 20px;">
-                <div class="telemetry-value counter">{electron_flux_value:.0f} e⁻/cm²/s</div>
+                <div class="telemetry-value">{electron_flux_value:.0f} e⁻/cm²/s</div>
                 <div class="telemetry-bar">
                     <div class="telemetry-bar-fill" style="width: {electron_norm*100:.0f}%;"></div>
                 </div>
@@ -685,34 +539,34 @@ with col2:
         <div class="telemetry-row">
             <div class="telemetry-label">IMF Bz (GSM)</div>
             <div style="flex: 1; margin-left: 20px;">
-                <div class="telemetry-value counter" style="color: {'#ff8500' if bz_gsm_value < -5 else '#00d9ff'};">{bz_gsm_value:.1f} nT</div>
+                <div class="telemetry-value" style="color: {'#ff8500' if bz_gsm_value < -5 else '#00d9ff'};">{bz_gsm_value:.1f} nT</div>
                 <div class="telemetry-bar">
                     <div class="telemetry-bar-fill" style="width: {bz_norm*100:.0f}%; background: linear-gradient(90deg, #ff8500, #ffbe0b);"></div>
                 </div>
             </div>
         </div>
-        <div class="telemetry-row" style="animation-delay: 0.1s;">
+        <div class="telemetry-row">
             <div class="telemetry-label">Plasma Density</div>
             <div style="flex: 1; margin-left: 20px;">
-                <div class="telemetry-value counter">{density_value:.1f} cm⁻³</div>
+                <div class="telemetry-value">{density_value:.1f} cm⁻³</div>
                 <div class="telemetry-bar">
                     <div class="telemetry-bar-fill" style="width: {density_norm*100:.0f}%;"></div>
                 </div>
             </div>
         </div>
-        <div class="telemetry-row" style="animation-delay: 0.2s;">
+        <div class="telemetry-row">
             <div class="telemetry-label">X-Ray Flux</div>
             <div style="flex: 1; margin-left: 20px;">
-                <div class="telemetry-value counter">{xray_flux_value:.2e} W/m²</div>
+                <div class="telemetry-value">{xray_flux_value:.2e} W/m²</div>
                 <div class="telemetry-bar">
                     <div class="telemetry-bar-fill" style="width: {xray_norm*100:.0f}%;"></div>
                 </div>
             </div>
         </div>
-        <div class="telemetry-row" style="animation-delay: 0.3s;">
+        <div class="telemetry-row">
             <div class="telemetry-label">Temperature</div>
             <div style="flex: 1; margin-left: 20px;">
-                <div class="telemetry-value counter">{temperature_value:.2e} K</div>
+                <div class="telemetry-value">{temperature_value:.2e} K</div>
                 <div class="telemetry-bar">
                     <div class="telemetry-bar-fill" style="width: {temperature_norm*100:.0f}%;"></div>
                 </div>
@@ -725,7 +579,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
 
-# ================= 48-HOUR TREND ANALYSIS WITH LIVE MARKER =================
+# ================= 48-HOUR TREND ANALYSIS =================
 st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
 st.markdown('<h2 style="font-family: Orbitron; margin-bottom: 24px;">⬢ 48-HOUR TREND ANALYSIS</h2>', unsafe_allow_html=True)
 
@@ -760,7 +614,7 @@ fig.add_trace(go.Scatter(
     hovertemplate='<b>Kp Index</b><br>Time: %{x}<br>Value: %{y:.1f}<extra></extra>'
 ))
 
-# Add marker for current LIVE point with animation
+# Add marker for current LIVE point
 fig.add_trace(go.Scatter(
     x=[hours[-1]],
     y=[kp_value],
@@ -794,7 +648,6 @@ fig.update_layout(
     height=400,
     margin=dict(l=60, r=60, t=20, b=60),
     hovermode='x unified',
-    transition={'duration': 750, 'easing': 'cubic-in-out'},
     legend=dict(
         orientation="h",
         yanchor="bottom",
@@ -833,7 +686,7 @@ fig.update_layout(
     )
 )
 
-st.plotly_chart(fig, use_container_width=True, key='trend_chart')
+st.plotly_chart(fig, use_container_width=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -851,28 +704,28 @@ with col1:
     urgency = ml_forecast.get('urgency_multiplier', 1.0)
     
     st.markdown(f"""
-    <div style="padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border-left: 4px solid #00d9ff; animation: fadeIn 0.6s ease-out;">
-        <div style="font-family: Orbitron; font-size: 1.2rem; margin-bottom: 16px; color: #00d9ff;">
+    <div style="padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border-left: 4px solid var(--color-primary);">
+        <div style="font-family: Orbitron; font-size: 1.2rem; margin-bottom: 16px; color: var(--color-primary);">
             Storm Probability Forecast
         </div>
         <div style="margin-bottom: 16px;">
-            <div style="font-size: 0.85rem; color: #6b7a99; margin-bottom: 6px;">PROBABILITY (G3+)</div>
-            <div class="counter" style="font-family: Orbitron; font-size: 2.5rem; color: #00d9ff; font-weight: 700;">
+            <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 6px;">PROBABILITY (G3+)</div>
+            <div style="font-family: Orbitron; font-size: 2.5rem; color: var(--color-primary); font-weight: 700;">
                 {storm_prob*100:.1f}%
             </div>
         </div>
         <div style="margin-bottom: 16px;">
-            <div style="font-size: 0.85rem; color: #6b7a99; margin-bottom: 6px;">DETECTED PATTERN</div>
+            <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 6px;">DETECTED PATTERN</div>
             <div style="font-size: 0.95rem; line-height: 1.5;">{pattern}</div>
         </div>
         <div style="display: flex; gap: 20px;">
             <div>
-                <div style="font-size: 0.75rem; color: #6b7a99; margin-bottom: 4px;">CONFIDENCE</div>
-                <div class="counter" style="font-family: Orbitron; font-size: 1.3rem; color: #00f5a0;">{confidence:.2f}</div>
+                <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 4px;">CONFIDENCE</div>
+                <div style="font-family: Orbitron; font-size: 1.3rem; color: var(--color-success);">{confidence:.2f}</div>
             </div>
             <div>
-                <div style="font-size: 0.75rem; color: #6b7a99; margin-bottom: 4px;">URGENCY</div>
-                <div class="counter" style="font-family: Orbitron; font-size: 1.3rem; color: #ffbe0b;">{urgency:.2f}x</div>
+                <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 4px;">URGENCY</div>
+                <div style="font-family: Orbitron; font-size: 1.3rem; color: var(--color-warning);">{urgency:.2f}x</div>
             </div>
         </div>
     </div>
@@ -888,34 +741,34 @@ with col2:
         combined = temporal_features.get('combined_storm_score', 0.0)
         
         st.markdown(f"""
-        <div style="padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; animation: fadeIn 0.6s ease-out 0.2s both;">
-            <div style="font-family: Orbitron; font-size: 1.2rem; margin-bottom: 16px; color: #ffbe0b;">
+        <div style="padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: 12px;">
+            <div style="font-family: Orbitron; font-size: 1.2rem; margin-bottom: 16px; color: var(--color-accent);">
                 Temporal Features
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div style="animation: slideIn 0.5s ease-out 0.1s both;">
-                    <div style="font-size: 0.75rem; color: #6b7a99; margin-bottom: 4px;">Bz Stress</div>
-                    <div class="counter" style="font-family: Orbitron; font-size: 1.1rem; color: #00d9ff;">{bz_stress:.3f}</div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 4px;">Bz Stress</div>
+                    <div style="font-family: Orbitron; font-size: 1.1rem; color: var(--color-primary);">{bz_stress:.3f}</div>
                 </div>
-                <div style="animation: slideIn 0.5s ease-out 0.2s both;">
-                    <div style="font-size: 0.75rem; color: #6b7a99; margin-bottom: 4px;">Wind Accel</div>
-                    <div class="counter" style="font-family: Orbitron; font-size: 1.1rem; color: #00d9ff;">{wind_accel:.3f}</div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 4px;">Wind Accel</div>
+                    <div style="font-family: Orbitron; font-size: 1.1rem; color: var(--color-primary);">{wind_accel:.3f}</div>
                 </div>
-                <div style="animation: slideIn 0.5s ease-out 0.3s both;">
-                    <div style="font-size: 0.75rem; color: #6b7a99; margin-bottom: 4px;">Proton Spike</div>
-                    <div class="counter" style="font-family: Orbitron; font-size: 1.1rem; color: #00d9ff;">{proton_spike:.3f}</div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 4px;">Proton Spike</div>
+                    <div style="font-family: Orbitron; font-size: 1.1rem; color: var(--color-primary);">{proton_spike:.3f}</div>
                 </div>
-                <div style="animation: slideIn 0.5s ease-out 0.4s both;">
-                    <div style="font-size: 0.75rem; color: #6b7a99; margin-bottom: 4px;">Plasma Press</div>
-                    <div class="counter" style="font-family: Orbitron; font-size: 1.1rem; color: #00d9ff;">{plasma_press:.3f}</div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 4px;">Plasma Press</div>
+                    <div style="font-family: Orbitron; font-size: 1.1rem; color: var(--color-primary);">{plasma_press:.3f}</div>
                 </div>
-                <div style="animation: slideIn 0.5s ease-out 0.5s both;">
-                    <div style="font-size: 0.75rem; color: #6b7a99; margin-bottom: 4px;">Kp Persist</div>
-                    <div class="counter" style="font-family: Orbitron; font-size: 1.1rem; color: #00d9ff;">{kp_persist:.3f}</div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 4px;">Kp Persist</div>
+                    <div style="font-family: Orbitron; font-size: 1.1rem; color: var(--color-primary);">{kp_persist:.3f}</div>
                 </div>
-                <div style="animation: slideIn 0.5s ease-out 0.6s both;">
-                    <div style="font-size: 0.75rem; color: #6b7a99; margin-bottom: 4px;">Combined</div>
-                    <div class="counter" style="font-family: Orbitron; font-size: 1.1rem; color: #00d9ff;">{combined:.3f}</div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 4px;">Combined</div>
+                    <div style="font-family: Orbitron; font-size: 1.1rem; color: var(--color-primary);">{combined:.3f}</div>
                 </div>
             </div>
         </div>
@@ -924,6 +777,7 @@ with col2:
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ================= AUTO-REFRESH (Streamlit Native) =================
+# Add auto-refresh using Streamlit's rerun
 import time as time_module
 
 # Create a placeholder for countdown
@@ -941,7 +795,7 @@ if elapsed >= 30:  # 30 seconds
 else:
     remaining = int(30 - elapsed)
     refresh_placeholder.markdown(
-        f'<div style="text-align: center; color: #6b7a99; font-size: 0.75rem; margin-top: 16px; animation: fadeIn 0.5s ease-out;">⟳ Auto-refresh in <span style="color: #00d9ff; font-weight: 700;">{remaining}</span> seconds...</div>',
+        f'<div style="text-align: center; color: #6b7a99; font-size: 0.75rem; margin-top: 16px;">Auto-refresh in {remaining} seconds...</div>',
         unsafe_allow_html=True
     )
     time_module.sleep(1)
@@ -949,7 +803,7 @@ else:
 
 # ================= FOOTER =================
 st.markdown("""
-<div style="margin-top: 48px; padding: 24px; text-align: center; color: #6b7a99; font-size: 0.85rem; border-top: 1px solid rgba(0, 217, 255, 0.15); animation: fadeIn 1s ease-out;">
+<div style="margin-top: 48px; padding: 24px; text-align: center; color: var(--color-text-muted); font-size: 0.85rem; border-top: 1px solid var(--color-border);">
     <strong>ASTRORISK</strong> is an operational decision-support system powered by Mistral AI. 
     All advisories require human validation before implementation.<br>
     Data sources: NOAA SWPC, NASA ACE/DSCOVR | Classification: OPERATIONAL
