@@ -41,13 +41,15 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import brier_score_loss, roc_auc_score
 import streamlit as st
 
+import geoviz
+
 warnings.filterwarnings("ignore")
 torch.set_num_threads(2)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CONFIG
 # ─────────────────────────────────────────────────────────────────────────────
-BUILD = "2026-10-04.11"
+BUILD = "2026-10-04.12"
 MODEL_VERSION = 7
 WEIGHTS_DIR = Path("weights")
 LSTM_PATH = WEIGHTS_DIR / "storm_lstm_v4.pt"
@@ -1320,6 +1322,11 @@ def run_pipeline(models: Dict, prev: Optional[Dict] = None, force: bool = False)
         if gfz is not None:
             gfz["checked"] = now.isoformat()
 
+    try:                                                   # aurora oval, routes, magnetopause: never blocks the dashboard
+        viz = geoviz.build(raw, now.to_pydatetime(), prev.get("viz"))
+    except Exception as exc:
+        viz = {"ok": False, "error": str(exc)[:160]}
+
     mdl = models.get("meta") or {}
     snap = {
         "timestamp": now.isoformat(),
@@ -1335,6 +1342,7 @@ def run_pipeline(models: Dict, prev: Optional[Dict] = None, force: bool = False)
         "model": {k: v for k, v in mdl.items() if k not in ("sectors",)} | {
             "lstm": {k: v for k, v in (mdl.get("lstm") or {}).items() if k != "baseline"}},
         "advisory_meta": advisory_meta,
+        "viz": viz,
         "build": BUILD,
         "kp_source": kp_source,
         "gfz": gfz,
@@ -1832,7 +1840,8 @@ def footer_html(snap: Dict) -> str:
             f'electron) fetched {ts} UTC.{cross} Sector level = nowcast of those observations: NOAA G/S/R scales for Kp, protons and X-ray; '
             f'the electron, Bz and pressure thresholds are my heuristics. The 9 h outlook comes from Random Forests trained on '
             f'what followed in OMNI2 (Kp, Dst and AE outcomes; radiation risk is nowcast only); it is shown as bands because the probabilities are not calibrated across years, and only '
-            f'models that beat a Kp-only baseline on held-out data are used.{adv}<br>build {BUILD}</div>')
+            f'models that beat a Kp-only baseline on held-out data are used. Geomagnetic view: aurora from NOAA OVATION, coastlines from '
+            f'Natural Earth, magnetopause from the Shue 1998 model; routes are great circles, not flights.{adv}<br>build {BUILD}</div>')
 
 
 def dashboard_html(snap: Dict) -> str:
@@ -1892,7 +1901,8 @@ def dashboard_html(snap: Dict) -> str:
         </div>
         <div class="panel"><span class="cap">Live telemetry</span>{telemetry_html(raw, status)}</div>
       </section>
-      <section class="panel">{trend_html(snap.get('trend', []))}</section>
+      {geoviz.panel_html(snap.get('viz'))}
+      <section class="panel" style="margin-top:18px">{trend_html(snap.get('trend', []))}</section>
       {footer_html(snap)}
     </div>"""
 
@@ -1926,7 +1936,7 @@ SCRIPT = """
 def dashboard_doc(snap: Dict) -> str:
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'{CSS}</head><body>{dashboard_html(snap)}{SCRIPT}</body></html>')
+            f'{CSS}{geoviz.CSS}</head><body>{dashboard_html(snap)}{SCRIPT}{geoviz.SCRIPT}</body></html>')
 
 
 def render_iframe(doc: str) -> None:
