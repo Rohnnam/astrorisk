@@ -1,0 +1,33 @@
+OMNI2 2017: 8,760 hourly rows via omni2 file
+OMNI2 2018: 8,760 hourly rows via omni2 file
+OMNI2 2019: 8,760 hourly rows via omni2 file
+OMNI2 2020: 8,784 hourly rows via omni2 file
+OMNI2 2021: 8,760 hourly rows via omni2 file
+OMNI2 2022: 8,760 hourly rows via omni2 file
+OMNI2 2023: 8,760 hourly rows via omni2 file
+OMNI2 2024: 8,784 hourly rows via omni2 file
+22,812 windows | train 14,846 (2.8% pos) | val 3,274 (2.3%) | test 3,410 (6.1%)
+epoch  1  train 0.2279  val 0.1110  val-AUC 0.3197957695113056
+epoch  5  train 0.1292  val 0.1094  val-AUC 0.580531416067521
+epoch 10  train 0.1068  val 0.0960  val-AUC 0.8232030842971761
+epoch 15  train 0.0951  val 0.0840  val-AUC 0.8739772845680941
+epoch 20  train 0.0910  val 0.0784  val-AUC 0.8817463790767949
+epoch 25  train 0.0881  val 0.0757  val-AUC 0.8854892153798063
+epoch 30  train 0.0887  val 0.0765  val-AUC 0.8843972074606647
+epoch 35  train 0.0869  val 0.0757  val-AUC 0.8858685005730959
+epoch 40  train 0.0866  val 0.0762  val-AUC 0.8852099614462854
+early stop at epoch 43
+TEST ROC-AUC 0.9146627108057463  persistence 0.8998897924374188  logistic 0.910593739489742  | onset-only 0.8767162298812847 (persistence 0.8528947539899554)  | brier 0.0376 vs climatology 0.0584  => VALIDATED
+sector RF: 23,104 usable blocks, features ['kp', 'kp_max24', 'speed', 'bz_south', 'density', 'temp_log', 'pressure']
+  power_grid/elev: Kp-alone AUC 0.8872903732670168  |  calibration 0-.05: pred 1% obs 2% (n=3656) | .05-.2: pred 10% obs 18% (n=490) | .2-.5: pred 32% obs 52% (n=267) | .5-1: pred 72% obs 89% (n=208)
+  power_grid/elev: base rate 5.4%  held-out ROC-AUC 0.9251649546042566
+  power_grid/severe: Kp-alone AUC 0.9520853601793494  |  calibration 0-.05: pred 0% obs 0% (n=4386) | .05-.2: pred 10% obs 14% (n=159) | .2-.5: pred 35% obs 58% (n=57)
+  power_grid/severe: base rate 0.6%  held-out ROC-AUC 0.9319414482372902
+  satellite/elev: Kp-alone AUC 0.8877487824350051  |  calibration 0-.05: pred 1% obs 2% (n=3771) | .05-.2: pred 10% obs 20% (n=423) | .2-.5: pred 33% obs 54% (n=231) | .5-1: pred 70% obs 89% (n=196)
+  satellite/elev: base rate 4.8%  held-out ROC-AUC 0.9293336102064162
+  satellite/severe: Kp-alone AUC 0.9636246755452054  |  calibration 0-.05: pred 0% obs 0% (n=4414) | .05-.2: pred 11% obs 15% (n=135) | .2-.5: pred 35% obs 64% (n=55)
+  satellite/severe: base rate 0.6%  held-out ROC-AUC 0.9551536763457293
+  aviation/elev: Kp-alone AUC 0.892026466990267  |  calibration 0-.05: pred 1% obs 1% (n=3878) | .05-.2: pred 10% obs 12% (n=452) | .2-.5: pred 31% obs 40% (n=203) | .5-1: pred 66% obs 76% (n=88)
+  aviation/elev: base rate 3.2%  held-out ROC-AUC 0.9021771694122767
+  aviation/severe: Kp-alone AUC 0.9325667980727114  |  calibration 0-.05: pred 0% obs 0% (n=4433) | .05-.2: pred 9% obs 8% (n=139) | .2-.5: pred 27% obs 59% (n=49)
+  aviation/severe: base rate 0.4%  held-out ROC-AUC 0.8992016087285469

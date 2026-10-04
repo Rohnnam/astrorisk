@@ -1,0 +1,100 @@
+{
+  "version": 7,
+  "features": [
+    "kp_norm",
+    "wind_speed_norm",
+    "bz_norm",
+    "density_norm",
+    "temperature_norm"
+  ],
+  "source": "omni2 file",
+  "years": [
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "trained_at": "2026-10-04T10:15:55.591237+00:00",
+  "lstm": {
+    "n_windows": 22812,
+    "n_train": 14846,
+    "n_test": 3410,
+    "base_rate_train": 0.027751583606004715,
+    "base_rate_test": 0.060997068881988525,
+    "test_mean_pred": 0.050330810248851776,
+    "auc": 0.9146627108057463,
+    "auc_onset": 0.8767162298812847,
+    "auc_persistence": 0.8998897924374188,
+    "auc_persistence_onset": 0.8528947539899554,
+    "auc_logistic": 0.910593739489742,
+    "brier": 0.03763423395870441,
+    "brier_climatology": 0.058381687849760056,
+    "validated": true,
+    "baseline": [
+      0.14444445073604584,
+      0.1376190483570099,
+      0.4972222149372101,
+      0.04040404036641121,
+      0.02539505809545517
+    ]
+  },
+  "sectors": {
+    "features": [
+      "kp",
+      "kp_max24",
+      "speed",
+      "bz_south",
+      "density",
+      "temp_log",
+      "pressure"
+    ],
+    "sectors": {
+      "power_grid": {
+        "elev": {
+          "auc": 0.9251649546042566,
+          "kp_auc": 0.8872903732670168,
+          "base_rate": 0.053804865379620814,
+          "validated": true
+        },
+        "severe": {
+          "auc": 0.9319414482372902,
+          "kp_auc": 0.9520853601793494,
+          "base_rate": 0.006276512856029781,
+          "validated": false
+        }
+      },
+      "satellite": {
+        "elev": {
+          "auc": 0.9293336102064162,
+          "kp_auc": 0.8877487824350051,
+          "base_rate": 0.0481343606614146,
+          "validated": true
+        },
+        "severe": {
+          "auc": 0.9551536763457293,
+          "kp_auc": 0.9636246755452054,
+          "base_rate": 0.005886936196000346,
+          "validated": false
+        }
+      },
+      "aviation": {
+        "elev": {
+          "auc": 0.9021771694122767,
+          "kp_auc": 0.892026466990267,
+          "base_rate": 0.03242143537356073,
+          "validated": true
+        },
+        "severe": {
+          "auc": 0.8992016087285469,
+          "kp_auc": 0.9325667980727114,
+          "base_rate": 0.0038091940091766947,
+          "validated": false
+        }
+      }
+    }
+  }
+}
