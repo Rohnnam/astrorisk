@@ -4,7 +4,7 @@ Live space-weather risk dashboard for three sectors: **satellite operations**, *
 and **power grids**. It reads public NOAA feeds, scores current conditions on NOAA's G/S/R scales, estimates the
 chance of a geomagnetic storm in the next ~9 hours, and writes a short advisory for each sector.
 
-Live demo: _add your Streamlit URL here_
+Live demo: https://astroriskapp.streamlit.app/
 
 ## What you see
 
