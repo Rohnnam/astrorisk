@@ -4,7 +4,7 @@ Live space-weather risk dashboard for three sectors: **satellite operations**, *
 and **power grids**. It reads public NOAA feeds, scores current conditions on NOAA's G/S/R scales, estimates the
 chance of a geomagnetic storm in the next ~9 hours, and writes a short advisory for each sector.
 
-Live demo: https://astroriskapp.streamlit.app/
+Live demo: [_add your Streamlit URL here_](https://astroriskapp.streamlit.app/)
 
 ## What you see
 
@@ -13,6 +13,11 @@ Live demo: https://astroriskapp.streamlit.app/
   a 9-hour outlook band (unlikely / possible / likely), and an advisory paragraph.
 - **Storm probability gauge**: LSTM estimate of P(Kp >= 5 within the next 9 h), plus a rule-based pattern label.
 - **Live telemetry**: Kp, X-ray flux, proton flux, electron flux, solar-wind speed, Bz, density, temperature.
+- **Geomagnetic view**: a rotatable globe and a 3-D magnetosphere, one view per sector.
+  Aviation shows the live auroral oval (NOAA OVATION) with great-circle reference routes lit where they pass under it.
+  Satellites shows the magnetopause standoff distance, computed from live solar-wind pressure and Bz, against the
+  geostationary ring. Power grid shows how far reference cities are from the oval's edge. No aircraft positions are
+  used or simulated, and it is not a GIC forecast.
 - **48-hour trends**: Kp, wind speed, Bz, X-ray, protons, with NOAA scale thresholds. Wind and Bz only have about
   24 h of live history; the charts mark where the feed starts instead of padding the gap.
 
@@ -75,9 +80,12 @@ Helpers:
 ## Files
 
 - `app.py`: data fetching, models, scoring, advisory generation and the dashboard (single file).
+- `geoviz.py`: the geomagnetic view (data preparation, plus the canvas drawing code; no external libraries).
+- `assets/land_110m.json`: coastlines, Natural Earth 110m land (public domain) via world-atlas.
 - `weights/`: committed trained models, so the hosted app starts without retraining.
 - `.streamlit/config.toml`: theme and server settings.
 
 ## Data sources
 
-NOAA Space Weather Prediction Center, GFZ Potsdam (Kp), NASA OMNI2 (training), Groq (advisory text).
+NOAA Space Weather Prediction Center (including the OVATION aurora nowcast), GFZ Potsdam (Kp), NASA OMNI2 (training),
+Natural Earth (coastlines), Groq (advisory text). Magnetopause: Shue et al. 1998 empirical model.
